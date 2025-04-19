@@ -1,0 +1,113 @@
+* Large Language Model
+Starting date: <2025-04-08 Tue>
+Basically this project aims at helping me to understand how
+*Large Language Model* (LLM) works. The objective of this
+is to build one from scratch and by only using homemade tools.
+
+** The aganda
+1. Building an LLM
+   1. Data preparation & sampling
+   2. Attention mechanism
+   3. LLM architecture
+2. Foundation model
+   1. Training loop
+   2. Model evaluation
+   3. Load pretrained weights
+3. Finetuning
+   1. Classification (Dataset with class labels)
+   2. Personal assistant (Instruction dataset)
+
+** Resources
+- [Book] Build a Large Language Model (From Scratch) by /Sebastian Raschka/
+- [Youtube] Tutorial of the book Build a Large Language Model: [[https://www.youtube.com/watch?v=kPGTx4wcm_w][serie]]
+- [Youtube] tutorial serie: [[https://www.youtube.com/watch?v=ZLbVdvOoTKM][How to Build an LLM from Scratch]]
+- [Youtube] tutorial: [[https://www.youtube.com/watch?v=kCc8FmEb1nY][Let's build GPT: from scratch, in code, spelled out.]]
+- [Youtube] Short explaition in French of LLM: [[https://www.youtube.com/watch?v=LPZh9BOjkQs][Les modèles de langage en bref]]
+
+** Let's go (Theory)
+
+*** Data preparation & sampling
+The model is to predict the next word in a sentence or a text. The model is
+simply (pre)trained to predict the next word.
+
+Next word **(/token)** prediction.
+
+For example, with the given text: =This is a simple phrase to write=, the *Input* the LLM receives
+is =This= (the first word of the sentence), the *target* (target to predict) is =is=, it is the second one.
+And the remaing of the sentence =a simple phrase to write=, the LLM can't access words past the target.
+
+The dataset is from the given example (=This is a simple phrase to write=) there are a sample N° for each
+word, where the target move right until it reaches the end of the phrase. This how a dataset is prepare
+for a /pre-training/.
+
+This is ineficiant to put one phrase or text at a time,
+in practice it prefered to do /batching/ to put multiple training input at a time. Each
+input must have the same number of element. Ex:
+Sample text:
+=Hello world, this is a quiete longest text than the previous one, that were will
+use for the pre-training dataset=.
+
+Here the input are:
+#+begin_src python
+x = tensor(
+    [["Hello", "world", ",", "this"],
+    ["is", "a", "quiete", "longest"],
+    ["text", "than", "the", "previous"],
+    ...]
+)
+#+end_src
+
+The common input lengths are > 1024.
+
+The tokenization is the mechanism to assign a *Token ID* to each token of an input text.
+To do so, we take an input text and to tokenize it, a seperator is chosen here is
+the space (but it could be something else). And for each token of an input and ID
+is assigned. There is what is called a *vocabulary* based on the unique *words* in
+the training dataset.
+
+There are more sophisticated process of play. Depending on the  models
+uses different approach to tokenize.
+For instance GPT use BPE (byte pair encoding), SentencePiece for Llama.
+This more sophisticated approach aim to deal with unknown words in
+order to not make the model crash if a word is unknown.
+
+For example, this input text: =Akwirw ier=, unknown words are tokenized into individual
+characters or subwords:
+=Akwirw ier=
+Tokens: =Ak=, =w=, =ir=, =w=, =" "=, =ier=
+Token IDs: =33901=, =86=, =343=, =86=, =220=, =959=
+
+With this if the words does not appear in the pre-training dataset, the model won't crash.
+
+*** LLM architecture
+- Stuff to check RMS (root mean square: is a norm)
+- SILU
+
+#+CAPTION: GPT model architecture overview
+#+NAME: fig:SED-GPT
+[[file:./images/gpt_architecture.png]]
+
+*** PreTraining
+
+*Labels* are the inputs shifted by +1. For example with this sample text:
+=In the heart of the city stood the old library, a relic ...=
+
+Tensor containing the inputs:
+x = tensor([["In", "the", "heart", "of"],
+            ["the", "city", "stood", the"],
+	    ["old", "library", ",", "a"],
+	    [..]])
+
+Tensor containing the targets	    
+x = tensor([["the", "heart", "of", "the"],
+            ["city", "stood", the", "odl"],
+	    ["library", ",", "a", "relic"],
+	    [..]])
+
+
+	    
+** Let's code
+*** Tokenize text
+
+[[https://tiktokenizer.vercel.app/][Tiktokenizer Application]]: application to highlight the process of tokenization vwith the
+various LLM model.

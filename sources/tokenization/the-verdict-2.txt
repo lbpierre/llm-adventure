@@ -1,0 +1,2 @@
+This is a much simplier text input. However, how to test comma or punctuation?
+Do you known it? Hello, world. Is this-- a test?
