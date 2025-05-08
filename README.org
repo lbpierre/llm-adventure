@@ -4,6 +4,8 @@ Basically this project aims at helping me to understand how
 *Large Language Model* (LLM) works. The objective of this
 is to build one from scratch and by only using homemade tools.
 
+[[file:./images/llm-adventure-cover.png]]
+
 ** The aganda
 1. Building an LLM
    1. Data preparation & sampling
