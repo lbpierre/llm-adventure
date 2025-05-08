@@ -25,7 +25,6 @@ is to build one from scratch and by only using homemade tools.
 - [Youtube] Short explaition in French of LLM: [[https://www.youtube.com/watch?v=LPZh9BOjkQs][Les modèles de langage en bref]]
 
 ** Let's go (Theory)
-
 *** Data preparation & sampling
 The model is to predict the next word in a sentence or a text. The model is
 simply (pre)trained to predict the next word.
@@ -104,10 +103,70 @@ x = tensor([["the", "heart", "of", "the"],
 	    ["library", ",", "a", "relic"],
 	    [..]])
 
-
 	    
 ** Let's code
 *** Tokenize text
 
 [[https://tiktokenizer.vercel.app/][Tiktokenizer Application]]: application to highlight the process of tokenization vwith the
-various LLM model.
+various LLM model. A simple version of a tokenizer is available under [[dir:./sources/tokenizer]]
+
+The strategy is straitforward split a text on a set of character (the one that match this
+regular expression ="--|[.;_,?!'\"()]|\\s"=. Then it encodes each words by assigned
+it a token ID which is an integer starting from 0 to N where N is the total unique
+number of words in the pretraining dataset. This whole token IDs is called a *vocabulary*.
+This method as limit for instance; it is not able to encode/decode words that are unknown,
+this is why Byte Pair Encoding are used to!
+
+*** Tokenizer v2 -- Byte Pair Encoding
+The method is the same; however their is an extra layer of actions to do when an unknown
+word is encounter. The words is split by chunk to identify known word letf to righ and going
+smaller to small chunk size.
+
+To develop this algorithm I used the following data structure
+#+begin_src c
+typedef struct {
+    unsigned char *bytes;  // Pointer to byte array
+    int length;            // Length of the byte array
+} ByteSeq;
+#+end_src
+
+This represents a sequence of bytes - the fundamental unit in BPE. It stores both the raw byte data and its length.
+
+#+begin_src c
+typedef struct {
+    ByteSeq *sequences;    // Array of byte sequences
+    int count;             // Number of sequences
+} ByteSequences;
+#+end_src
+
+This is a collection of ByteSeq objects, representing a tokenized piece of text where each token is a byte sequence.
+
+#+begin_src c
+typedef struct {
+    unsigned char *first;       // First sequence in pair
+    int first_len;              // Length of first sequence
+    unsigned char *second;      // Second sequence in pair
+    int second_len;             // Length of second sequence
+    unsigned char *replacement; // New merged token
+    int replacement_len;        // Length of replacement
+    int count;                  // Frequency count of this pair
+} Merge;
+#+end_src
+
+This structure represents a merge operation in BPE - it tracks:
+- Two adjacent byte sequences to be merged
+- The resulting merged sequence
+- How frequently this pair appears in the data
+
+#+begin_src c
+typedef struct {
+    unsigned char *bytes;  // Byte sequence for this vocabulary item
+    int length;            // Length of the byte sequence
+} VocabEntry;
+#+end_src
+
+An entry in the BPE vocabulary, storing a byte sequence that has been identified as a token.
+
+In this implementation, the number of merge is fixed to the value **15**. 
+
+*** Data asampling with a sliding window
