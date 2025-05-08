@@ -27,6 +27,10 @@ Array* encode_input(Tokenizer *self, const char *text) {
     if (tokenID >= 0) {
       array_add(encoded, tokenID);
     }
+    else {
+      tokenID = get_tokenID(self->vocabulary, "<|unk|>");
+      array_add(encoded, tokenID);
+    }
   }
 
   return encoded;
@@ -58,6 +62,11 @@ Tokenizer* create_tokenizer(const char* filepath, PCRE2_SPTR pattern) {
   }
   
   tokenizer->vocabulary = regex_split_stream(file, pattern);
+
+  /* Adding special token for end of text and unknown word */
+  add_unique_string(&tokenizer->vocabulary, "<|unk|>");
+  add_unique_string(&tokenizer->vocabulary, "<|endoftext|>");
+  
   printf("There are %u token in the set\n", HASH_COUNT(tokenizer->vocabulary));
 
   return tokenizer;
