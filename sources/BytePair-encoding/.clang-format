@@ -1,0 +1,8 @@
+BasedOnStyle: GNU
+IndentWidth: 2            # Indente avec 2 espaces (tu peux mettre 4 si tu préfères)
+UseTab: Never             # Pas de tabulations, que des espaces
+ColumnLimit: 100          # Longueur max des lignes (change si tu veux 80 ou 120)
+BreakBeforeBraces: GNU    # Style d’accolades à la GNU
+AllowShortFunctionsOnASingleLine: Inline
+SpacesInParentheses: false
+SpaceAfterCStyleCast: true
