@@ -6,6 +6,7 @@ is to build one from scratch and by only using homemade tools.
 
 [[file:./images/llm-adventure-cover.png]]
 
+* Theory
 ** The aganda
 1. Building an LLM
    1. Data preparation & sampling
@@ -26,8 +27,7 @@ is to build one from scratch and by only using homemade tools.
 - [Youtube] tutorial: [[https://www.youtube.com/watch?v=kCc8FmEb1nY][Let's build GPT: from scratch, in code, spelled out.]]
 - [Youtube] Short explaition in French of LLM: [[https://www.youtube.com/watch?v=LPZh9BOjkQs][Les modèles de langage en bref]]
 
-** Let's go (Theory)
-*** Data preparation & sampling
+** Data preparation & sampling
 The model is to predict the next word in a sentence or a text. The model is
 simply (pre)trained to predict the next word.
 
@@ -80,7 +80,7 @@ Token IDs: =33901=, =86=, =343=, =86=, =220=, =959=
 
 With this if the words does not appear in the pre-training dataset, the model won't crash.
 
-*** LLM architecture
+** LLM architecture
 - Stuff to check RMS (root mean square: is a norm)
 - SILU
 
@@ -88,7 +88,7 @@ With this if the words does not appear in the pre-training dataset, the model wo
 #+NAME: fig:SED-GPT
 [[file:./images/gpt_architecture.png]]
 
-*** PreTraining
+** PreTraining
 
 *Labels* are the inputs shifted by +1. For example with this sample text:
 =In the heart of the city stood the old library, a relic ...=
@@ -104,10 +104,11 @@ x = tensor([["the", "heart", "of", "the"],
             ["city", "stood", the", "odl"],
 	    ["library", ",", "a", "relic"],
 	    [..]])
-
 	    
-** Let's code
-*** Tokenize text
+* Hands on
+** Building an LLM -- Stage 1
+*** Data Preparation & Sampling
+**** Tokenize Text
 
 [[https://tiktokenizer.vercel.app/][Tiktokenizer Application]]: application to highlight the process of tokenization vwith the
 various LLM model. A simple version of a tokenizer is available under [[dir:./sources/tokenizer]]
@@ -119,7 +120,7 @@ number of words in the pretraining dataset. This whole token IDs is called a *vo
 This method as limit for instance; it is not able to encode/decode words that are unknown,
 this is why Byte Pair Encoding are used to!
 
-*** Tokenizer v2 -- Byte Pair Encoding
+**** Tokenizer v2 -- Byte Pair Encoding
 The method is the same; however their is an extra layer of actions to do when an unknown
 word is encounter. The words is split by chunk to identify known word letf to righ and going
 smaller to small chunk size.
@@ -171,4 +172,5 @@ An entry in the BPE vocabulary, storing a byte sequence that has been identified
 
 In this implementation, the number of merge is fixed to the value **15**. 
 
-*** Data asampling with a sliding window
+**** Data Sampling with a Sliding Window
+*** Attention Mechanism
