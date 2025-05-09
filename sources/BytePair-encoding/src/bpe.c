@@ -42,7 +42,7 @@ train_bpe (const unsigned char *text, int text_len, int num_merges, int *final_v
       if (best_merge.count == 0)
         {
           DEBUG_PRINT ("No more pairs to merge. Stopping early\n");
-	  printf("No more pairs to merge. Stopping early, at round: %d\n", i);
+          printf ("No more pairs to merge. Stopping early, at round: %d\n", i);
           break;
         }
 
@@ -179,8 +179,8 @@ encode (const unsigned char *text, int text_len, VocabularyEntry *vocab, int voc
 
       if (encoded[i] == -1)
         {
-          DEBUG_PRINT ("Warning: Byte sequence not found in vocabulary at position %d. Using index -1\n",
-                  i);
+          DEBUG_PRINT (
+              "Warning: Byte sequence not found in vocabulary at position %d. Using index -1\n", i);
         }
     }
 

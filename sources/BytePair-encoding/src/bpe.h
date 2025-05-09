@@ -12,14 +12,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 #ifdef DEBUG
-    #define DEBUG_PRINT(fmt, ...) \
-        fprintf(stderr, fmt, ##__VA_ARGS__)
+#define DEBUG_PRINT(fmt, ...) fprintf (stderr, fmt, ##__VA_ARGS__)
 #else
-    #define DEBUG_PRINT(fmt, ...) ((void)0)
+#define DEBUG_PRINT(fmt, ...) ((void) 0)
 #endif
-
 
 #define MAX_VOCAB_SIZE 1000
 #define MAX_BYTES_LEN 2048
@@ -89,7 +86,7 @@ unsigned char *decode (int *encoded, int encoded_len, VocabularyEntry *vocab, in
 
 // Utility functions
 void print_bytes_hex (unsigned char *bytes, int len);
-char* read_file_to_buffer(const char* filename, size_t* text_len);
+char *read_file_to_buffer (const char *filename, size_t *text_len);
 void print_byte_sequence (ByteSequence seq);
 
 #endif // BPE_H
